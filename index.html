@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar Periksa 5 Langkah!</title>
+  
+  <!-- PEMANGGIL MANIFEST AGAR JADI APLIKASI -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#3498db">
+
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 15px; }
+    .container { max-width: 700px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .header-container { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #3498db; padding-bottom: 15px; margin-bottom: 25px; }
+    .header-container h1 { text-align: center; color: #2c3e50; margin: 0; flex-grow: 1; font-size: 22px; font-weight: bold; }
+    .logo-kiri, .logo-kanan { height: 60px; max-width: 100px; object-fit: contain; }
+    .form-group { margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 15px; }
+    input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
+    .section-title { background-color: #34495e; color: white; padding: 12px; margin-top: 30px; margin-bottom: 0; border-radius: 4px 4px 0 0; font-weight: bold; font-size: 16px; }
+    .section-header-labels { display: flex; justify-content: space-between; background-color: #ecf0f1; padding: 8px 10px; border-left: 1px solid #bdc3c7; border-right: 1px solid #bdc3c7; font-weight: bold; font-size: 14px; }
+    .question-card { border-left: 1px solid #bdc3c7; border-right: 1px solid #bdc3c7; border-bottom: 3px solid #bdc3c7; padding: 15px 10px; background-color: #ffffff; }
+    .question-body { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
+    .question-text-area { display: flex; gap: 10px; flex-grow: 1; }
+    .q-number { font-weight: bold; color: #7f8c8d; font-size: 16px; min-width: 20px; }
+    .q-text { font-size: 15px; line-height: 1.4; color: #2c3e50; font-weight: 500; }
+    .question-options { display: flex; gap: 20px; min-width: 110px; justify-content: flex-end; align-items: center; padding-top: 2px; }
+    .option-label { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .radio-merah { accent-color: #e74c3c; transform: scale(1.5); cursor: pointer; }
+    .radio-hitam { accent-color: #2c3e50; transform: scale(1.5); cursor: pointer; }
+    .risk-box { display: none; background-color: #fff3cd; border-left: 5px solid #e74c3c; padding: 12px; margin-top: 12px; border-radius: 4px; }
+    .risk-title { color: #c0392b; font-size: 14px; font-weight: bold; margin-bottom: 10px; display: block; border-bottom: 1px solid #f39c12; padding-bottom: 5px;}
+    .sub-label { font-size: 13px; color: #d35400; font-weight: 600; display: block; margin-bottom: 4px; margin-top: 8px;}
+    .dynamic-bahaya, .dynamic-kendali { padding: 8px; border: 1px solid #f39c12; background-color: #fffaf0; }
+    button { background-color: #27ae60; color: white; padding: 15px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 17px; width: 100%; margin-top: 25px; font-weight: bold; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
+    button:hover { opacity: 0.9; }
+    #summaryPage { display: none; text-align: center; padding: 20px 10px; }
+    .summary-success-icon { font-size: 60px; margin-bottom: 10px; }
+    .summary-title { font-size: 22px; color: #2c3e50; margin-bottom: 20px; font-weight: bold; }
+    .recap-box { background-color: #fdfbf7; border: 1px solid #f39c12; border-left: 6px solid #e74c3c; border-radius: 6px; padding: 15px; text-align: left; margin-bottom: 20px; display: none; }
+    .recap-box h3 { color: #c0392b; margin-top: 0; font-size: 16px; border-bottom: 1px solid #f39c12; padding-bottom: 8px; }
+    .recap-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #ccc; }
+    .summary-footer { font-size: 18px; font-weight: bold; margin-top: 20px; padding: 15px; border-radius: 6px; }
+    .footer-merah { background-color: #fff3cd; color: #d35400; border: 1px solid #f1c40f; }
+    .footer-hijau { background-color: #e8f8f5; color: #1e8449; border: 1px solid #2ecc71; }
+    .btn-new { background-color: #3498db; margin-top: 30px; width: auto; padding: 12px 30px; }
+    #btnSync { display:none; background-color: #e67e22; color: white; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="header-container">
+    <img src="https://lh3.googleusercontent.com/d/1KOtAu_QJHQRwQiLQ3zXycz6b9mpMz3NU" alt="Logo Kiri" class="logo-kiri">
+    <h1>Daftar Periksa 5 Langkah!</h1>
+    <img src="https://lh3.googleusercontent.com/d/1N9QvU_TPR0Hs7Ozgj5-uI3FEv9XLxTcJ" alt="Logo Kanan" class="logo-kanan">
+  </div>
+  
+  <!-- TOMBOL SINKRONISASI OFFLINE -->
+  <button type="button" id="btnSync" onclick="sinkronisasiOffline()">🔄 Sinkronisasi Data Offline (<span id="countOffline">0</span>)</button>
+
+  <!-- FORM UTAMA -->
+  <form id="checklistForm">
+    <div class="form-group">
+      <label>Nama</label>
+      <select id="namaDropdown" required>
+        <option value="">-- Pilih Nama Karyawan --</option>
+        <option value="Abdi pasaribu">Abdi pasaribu</option>
+        <option value="Faddillah Candra">Faddillah Candra</option>
+        <!-- (Tambahkan nama lainnya di sini) -->
+        <option value="Lainnya">-- Nama Lainnya (Ketik Manual) --</option>
+      </select>
+      <input type="text" id="namaManual" placeholder="Ketik nama karyawan di sini..." style="display: none; margin-top: 10px;">
+      <input type="hidden" name="nama" id="namaFinal">
+    </div>
+
+    <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
+    
+    <div class="form-group">
+      <label>Lokasi (Level 1)</label>
+      <select name="lokasi1" id="lokasi1" required>
+        <option value="">-- Pilih Area Utama --</option>
+        <option value="Office">Office</option>
+        <option value="Plant">Plant</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="PIT / Field">PIT / Field</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Lokasi (Level 2)</label>
+      <select name="lokasi2" id="lokasi2" required>
+        <option value="">-- Pilih Level 1 Terlebih Dahulu --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Lokasi (Level 3) / Titik Spesifik</label>
+      <input type="text" name="lokasi3" placeholder="Ketik detail spesifik area..." required>
+    </div>
+    <div class="form-group"><label>Uraian tugas:</label><textarea name="uraian" rows="3" required></textarea></div>
+
+    <!-- SEKSI 1 -->
+    <div class="section-title">Berhenti, Berpikir, dan Bersiap untuk tugas</div>
+    <div class="section-header-labels">
+      <span>Daftar Periksa</span>
+      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: black;">Ya</span><span style="color: red;">Tdk</span></div>
+    </div>
+    <script>
+      const qs1 = [
+        "Jika ada prosedur atau petunjuk kerja untuk tugas tersebut, apakah saya mengetahuinya?",
+        "Apakah saya sehat untuk tugas tersebut - mis: bebas dari kelelahan, cedera, awas, dan perhatian tidak teralihkan?",
+        "Apakah saya terlatih, kompeten, dan diberi wewenang untuk tugas ini?",
+        "Apakah saya memiliki perkakas, peralatan, and APD yang sesuai?"
+      ];
+      for(let i=1; i<=4; i++) {
+        document.write(`
+        <div class="question-card">
+          <div class="question-body">
+            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs1[i-1]}</span></div>
+            <div class="question-options">
+              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-hitam" required></label>
+              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-merah"></label>
+            </div>
+          </div>
+          <div id="risk-box-${i}" class="risk-box">
+            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+          </div>
+        </div>`);
+      }
+    </script>
+
+    <!-- SEKSI 2 -->
+    <div class="section-title">Identifikasi Bahaya</div>
+    <div class="section-header-labels">
+      <span>Daftar Periksa</span>
+      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: red;">Ya</span><span style="color: black;">Tdk</span></div>
+    </div>
+    <script>
+      const qs2 = [
+        "Apakah saya dapat mengalami keseleo, atau apakah posisi ergonomis saya buruk?",
+        "Akankah saya berada dalam bahaya atau terjebak di dalam atau di antara sesuatu?",
+        "Apakah saya bisa tergelincir atau tersandung sesuatu?",
+        "Apakah saya bisa jatuh ke atau dari sesuatu?",
+        "Apakah sesuatu bisa jatuh menimpa saya atau orang lain?",
+        "Apakah saya bisa kontak dengan zat-zat berbahaya?",
+        "Apakah saya mengoperasikan peralatan didekat manusia, bahan peledak, atau peralatan lain?",
+        "Apakah kondisi cuaca/lingkungan kerja memengaruhi kegiatan ini?",
+        "Apakah saya bisa menimbulkan dampak pada air, tanah, udara, atau masyarakat?",
+        "Apakah ada bahaya lain? Apakah Sumber Energi sudah dipertimbangkan?"
+      ];
+      for(let i=5; i<=14; i++) {
+        document.write(`
+        <div class="question-card">
+          <div class="question-body">
+            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs2[i-5]}</span></div>
+            <div class="question-options">
+              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-merah" required></label>
+              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-hitam"></label>
+            </div>
+          </div>
+          <div id="risk-box-${i}" class="risk-box">
+            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+          </div>
+        </div>`);
+      }
+    </script>
+
+    <!-- SEKSI 3 -->
+    <div class="section-title">Kendali Pencegahan</div>
+    <div class="section-header-labels">
+      <span>Daftar Periksa</span>
+      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: red;">Ya</span><span style="color: black;">Tdk</span></div>
+    </div>
+    <script>
+      const qs3 = [
+        "Apakah saya membutuhkan izin kerja atau sertifikat yang sesuai?",
+        "Apakah saya harus mengisolasi sumber energi dan menguji saat peralatan tidak terhubung ke catu daya?",
+        "Apakah ada perubahan pada proses, prosedur, peralatan, atau desain (MoC)?",
+        "Apakah saya harus memeriksa peralatan sebelum memulai pekerjaan?",
+        "Apakah saya membutuhkan APD tambahan untuk tugas tersebut?",
+        "Apakah saya membutuhkan komunikasi positif untuk memastikan orang lain menyadari kehadiran saya?"
+      ];
+      for(let i=15; i<=20; i++) {
+        document.write(`
+        <div class="question-card">
+          <div class="question-body">
+            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs3[i-15]}</span></div>
+            <div class="question-options">
+              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-merah" required></label>
+              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-hitam"></label>
+            </div>
+          </div>
+          <div id="risk-box-${i}" class="risk-box">
+            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+          </div>
+        </div>`);
+      }
+    </script>
+
+    <!-- DATA HIDDEN & SUBMIT -->
+    <input type="hidden" name="detailBahaya" id="detailBahayaHidden">
+    <input type="hidden" name="latitude" id="latHidden">
+    <input type="hidden" name="longitude" id="longHidden">
+    <button type="submit" id="btnSubmit" style="background-color: #95a5a6;">📍 Memeriksa Akses GPS...</button>
+  </form>
+
+  <!-- HALAMAN RINGKASAN -->
+  <div id="summaryPage">
+    <div id="summaryIcon" class="summary-success-icon">✅</div>
+    <div class="summary-title">Data Berhasil Disimpan!</div>
+    <div id="recapArea" class="recap-box">
+      <h3>Daftar Temuan Bahaya & Kendali:</h3>
+      <div id="recapContent"></div>
+    </div>
+    <div id="summaryMessage" class="summary-footer"></div>
+    <button type="button" class="btn-new" onclick="resetFormulir()">+ Isi Checklist Baru</button>
+  </div>
+
+</div>
+
+<script>
+  // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("Service Worker Berhasil Terdaftar!"))
+      .catch(err => console.log("Service Worker Gagal: ", err));
+  }
+
+  // --- PASTIKAN URL WEB APP GOOGLE AGAN DITEMPEL DI SINI! ---
+  const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec; 
+  // ----------------------------------------------------------
+
+  let gpsDiizinkan = false; 
+  let dataOffline = JSON.parse(localStorage.getItem('take5_offline')) || [];
+
+  // 1. CEK DATA OFFLINE SAAT APLIKASI DIBUKA
+  function periksaDataOffline() {
+    const btnSync = document.getElementById('btnSync');
+    const countOffline = document.getElementById('countOffline');
+    if (dataOffline.length > 0) {
+      btnSync.style.display = 'block';
+      countOffline.innerText = dataOffline.length;
+    } else {
+      btnSync.style.display = 'none';
+    }
+  }
+  window.onload = function() {
+    dapatkanLokasi();
+    periksaDataOffline();
+  };
+
+  // 2. FUNGSI GPS (Diperbolehkan Bypass Saat Offline Murni)
+  function dapatkanLokasi() {
+    const btnSubmit = document.getElementById('btnSubmit');
+    if (navigator.geolocation) {
+      btnSubmit.style.backgroundColor = '#f39c12';
+      btnSubmit.innerText = '📍 Sedang Meminta Izin GPS...';
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          gpsDiizinkan = true;
+          document.getElementById('latHidden').value = position.coords.latitude;
+          document.getElementById('longHidden').value = position.coords.longitude;
+          btnSubmit.style.backgroundColor = '#27ae60';
+          btnSubmit.innerText = 'Kirim Checklist Data';
+        },
+        function(error) {
+          gpsDiizinkan = false;
+          btnSubmit.style.backgroundColor = '#e74c3c';
+          btnSubmit.innerText = '⛔ GPS Ditolak! Klik Untuk Coba Lagi';
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+  }
+
+  // ... (LOGIKA CASCADE LOKASI & DROPDOWN NAMA TETAP SAMA SEPERTI SEBELUMNYA) ...
+  const dataLokasi = {
+    "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
+    "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
+    "Maintenance": ["Kontainer Penyimpanan", "Tool Room", "Area Welding", "Area Dangerous Good", "Workshop", "Other"],
+    "PIT / Field": ["Purnama", "Ramba Joring", "Barani", "Highland Magazine", "Lowland Magazine", "Other"]
+  };
+  
+  document.getElementById('namaDropdown').addEventListener('change', function() {
+    const manualInput = document.getElementById('namaManual');
+    if (this.value === 'Lainnya') { manualInput.style.display = 'block'; manualInput.required = true; } 
+    else { manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = ''; }
+  });
+
+  document.getElementById('lokasi1').addEventListener('change', function() {
+    const pilihanLevel1 = this.value;
+    const elemenLokasi2 = document.getElementById('lokasi2');
+    elemenLokasi2.innerHTML = '<option value="">-- Pilih Area Level 2 --</option>';
+    if (pilihanLevel1 && dataLokasi[pilihanLevel1]) {
+      dataLokasi[pilihanLevel1].forEach(item => {
+        elemenLokasi2.appendChild(new Option(item, item));
+      });
+    }
+  });
+
+  // LOGIKA WARNA MERAH
+  function periksaKondisiMerah() {
+    for (let i = 1; i <= 20; i++) {
+      const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+      const riskBox = document.getElementById(`risk-box-${i}`);
+      let isRed = false;
+      if (checkedRadio) {
+        if (i <= 4 && checkedRadio.value === 'Tdk') isRed = true;
+        if (i >= 5 && checkedRadio.value === 'Ya') isRed = true;
+      }
+      if (isRed) { riskBox.style.display = 'block'; riskBox.querySelector('.dynamic-bahaya').required = true; riskBox.querySelector('.dynamic-kendali').required = true; } 
+      else { riskBox.style.display = 'none'; riskBox.querySelector('.dynamic-bahaya').required = false; riskBox.querySelector('.dynamic-kendali').required = false; }
+    }
+  }
+  document.querySelectorAll('input[type="radio"]').forEach(radio => radio.addEventListener('change', periksaKondisiMerah));
+
+  // 3. LOGIKA SUBMIT DATA (FETCH API)
+  document.getElementById('checklistForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    if (!gpsDiizinkan && navigator.onLine) {
+      alert("Akses lokasi (GPS) wajib diaktifkan!");
+      dapatkanLokasi(); return; 
+    }
+
+    const btnSubmit = document.getElementById('btnSubmit');
+    btnSubmit.disabled = true; btnSubmit.innerText = 'Menyimpan...';
+
+    // Set nama final
+    const dropdownVal = document.getElementById('namaDropdown').value;
+    document.getElementById('namaFinal').value = (dropdownVal === 'Lainnya') ? document.getElementById('namaManual').value : dropdownVal;
+
+    let combinedText = []; let hasHazards = false; let recapHTML = "";
+    for (let i = 1; i <= 20; i++) {
+      const riskBox = document.getElementById(`risk-box-${i}`);
+      if (riskBox.style.display === 'block') {
+         const bahaya = riskBox.querySelector('.dynamic-bahaya').value.trim();
+         const kendali = riskBox.querySelector('.dynamic-kendali').value.trim();
+         if (bahaya || kendali) {
+            hasHazards = true;
+            combinedText.push(`[No ${i}] Bahaya: ${bahaya} | Kendali: ${kendali}`);
+            recapHTML += `<div class="recap-item"><div style="color: #c0392b; font-weight: bold;">Bahaya:</div><div>${bahaya}</div><div style="color: #27ae60; font-weight: bold;">Kendali:</div><div>${kendali}</div></div>`;
+         }
+      }
+    }
+    document.getElementById('detailBahayaHidden').value = combinedText.join('\n\n');
+
+    // Objek Data
+    const formData = {
+      nama: document.getElementById('namaFinal').value,
+      tanggal: document.querySelector('input[name="tanggal"]').value,
+      lokasi1: document.getElementById('lokasi1').value, lokasi2: document.getElementById('lokasi2').value,
+      lokasi3: document.querySelector('input[name="lokasi3"]').value, uraian: document.querySelector('textarea[name="uraian"]').value,
+      q1: document.querySelector('input[name="q1"]:checked')?.value || "", q2: document.querySelector('input[name="q2"]:checked')?.value || "",
+      q3: document.querySelector('input[name="q3"]:checked')?.value || "", q4: document.querySelector('input[name="q4"]:checked')?.value || "",
+      q5: document.querySelector('input[name="q5"]:checked')?.value || "", q6: document.querySelector('input[name="q6"]:checked')?.value || "",
+      q7: document.querySelector('input[name="q7"]:checked')?.value || "", q8: document.querySelector('input[name="q8"]:checked')?.value || "",
+      q9: document.querySelector('input[name="q9"]:checked')?.value || "", q10: document.querySelector('input[name="q10"]:checked')?.value || "",
+      q11: document.querySelector('input[name="q11"]:checked')?.value || "", q12: document.querySelector('input[name="q12"]:checked')?.value || "",
+      q13: document.querySelector('input[name="q13"]:checked')?.value || "", q14: document.querySelector('input[name="q14"]:checked')?.value || "",
+      q15: document.querySelector('input[name="q15"]:checked')?.value || "", q16: document.querySelector('input[name="q16"]:checked')?.value || "",
+      q17: document.querySelector('input[name="q17"]:checked')?.value || "", q18: document.querySelector('input[name="q18"]:checked')?.value || "",
+      q19: document.querySelector('input[name="q19"]:checked')?.value || "", q20: document.querySelector('input[name="q20"]:checked')?.value || "",
+      detailBahaya: document.getElementById('detailBahayaHidden').value,
+      latitude: document.getElementById('latHidden').value, longitude: document.getElementById('longHidden').value
+    };
+
+    if (!navigator.onLine) {
+      // MODE OFFLINE 
+      dataOffline.push(formData);
+      localStorage.setItem('take5_offline', JSON.stringify(dataOffline));
+      alert("⚠️ TIDAK ADA SINYAL!\n\nData disimpan di memori HP. Jangan lupa tekan tombol 'Sinkronisasi' saat kembali ke area bersinyal.");
+      btnSubmit.disabled = false; btnSubmit.innerText = 'Kirim Checklist Data';
+      periksaDataOffline(); resetFormulir();
+    } else {
+      // MODE ONLINE (KIRIM PAKAI FETCH KE GOOGLE API)
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.status === "success") {
+          tampilkanSukses(hasHazards, recapHTML);
+        } else { throw new Error(data.message); }
+      })
+      .catch(error => {
+        alert("Gagal kirim ke server. Data akan disimpan Offline.");
+        dataOffline.push(formData);
+        localStorage.setItem('take5_offline', JSON.stringify(dataOffline));
+        periksaDataOffline(); resetFormulir();
+      });
+    }
+  });
+
+  // TAMPILAN SUKSES
+  function tampilkanSukses(hasHazards, recapHTML) {
+    document.getElementById('checklistForm').style.display = 'none';
+    document.getElementById('summaryPage').style.display = 'block';
+    window.scrollTo(0, 0); 
+    if (hasHazards) {
+      document.getElementById('summaryIcon').innerHTML = "⚠️";
+      document.getElementById('recapArea').style.display = 'block';
+      document.getElementById('recapContent').innerHTML = recapHTML;
+      document.getElementById('summaryMessage').className = "summary-footer footer-merah";
+      document.getElementById('summaryMessage').innerHTML = "Silahkan lanjutkan pekerjaan dengan bahaya dan kontrol yang disepakati.";
+    } else {
+      document.getElementById('summaryIcon').innerHTML = "✅";
+      document.getElementById('recapArea').style.display = 'none';
+      document.getElementById('summaryMessage').className = "summary-footer footer-hijau";
+      document.getElementById('summaryMessage').innerHTML = "Silahkan lanjutkan pekerjaan dengan aman.";
+    }
+  }
+
+  function resetFormulir() {
+    document.getElementById('summaryPage').style.display = 'none';
+    document.getElementById('checklistForm').style.display = 'block';
+    document.getElementById('checklistForm').reset();
+    gpsDiizinkan = false; 
+    document.getElementById('btnSubmit').disabled = false;
+    periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 4. FUNGSI SINKRONISASI
+  function sinkronisasiOffline() {
+    if (!navigator.onLine) { alert("Anda masih Offline. Cari sinyal terlebih dahulu!"); return; }
+    const btnSync = document.getElementById('btnSync');
+    btnSync.innerText = "⏳ Sedang Sinkronisasi..."; btnSync.disabled = true;
+
+    const dataKirim = dataOffline[0]; 
+    
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(dataKirim)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.status === "success") {
+        dataOffline.shift(); 
+        localStorage.setItem('take5_offline', JSON.stringify(dataOffline));
+        if (dataOffline.length > 0) { sinkronisasiOffline(); } 
+        else { alert("✅ Semua Data Offline Berhasil Dikirim!"); btnSync.disabled = false; periksaDataOffline(); }
+      } else { throw new Error(data.message); }
+    })
+    .catch(error => {
+      alert("Gagal Sinkronisasi. Coba lagi nanti.");
+      btnSync.innerText = `🔄 Sinkronisasi Data Offline (${dataOffline.length})`; btnSync.disabled = false;
+    });
+  }
+</script>
+</body>
+</html>

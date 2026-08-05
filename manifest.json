@@ -1,0 +1,16 @@
+{
+  "name": "Take 5 Safety K3",
+  "short_name": "Take 5",
+  "description": "Aplikasi Checklist Take 5 Offline",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/190/190411.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
