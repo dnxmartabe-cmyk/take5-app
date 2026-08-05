@@ -68,8 +68,33 @@
       <select id="namaDropdown" required>
         <option value="">-- Pilih Nama Karyawan --</option>
         <option value="Abdi pasaribu">Abdi pasaribu</option>
+        <option value="Abdul basir harahap">Abdul basir harahap</option>
+        <option value="Adrian Hakim">Adrian Hakim</option>
+        <option value="Anugrah tri permana">Anugrah tri permana</option>
+        <option value="Baktiar Majid Nasution">Baktiar Majid Nasution</option>
+        <option value="Chichilia De Agustina Sihombing">Chichilia De Agustina Sihombing</option>
+        <option value="Deby ayu sabira">Deby ayu sabira</option>
+        <option value="Dimas Himawan nasution">Dimas Himawan nasution</option>
         <option value="Faddillah Candra">Faddillah Candra</option>
-        <!-- (Tambahkan nama lainnya di sini) -->
+        <option value="Fathur Rozaq">Fathur Rozaq</option>
+        <option value="Herry Saputra">Herry Saputra</option>
+        <option value="Ijun pasahri siregar">Ijun pasahri siregar</option>
+        <option value="Irmadani">Irmadani</option>
+        <option value="Ismail saleh siregar">Ismail saleh siregar</option>
+        <option value="Jonson Hutagalung">Jonson Hutagalung</option>
+        <option value="Laina Tussyaripah">Laina Tussyaripah</option>
+        <option value="Muksin sihombing">Muksin sihombing</option>
+        <option value="Noto prayitno">Noto prayitno</option>
+        <option value="Patima Renny">Patima Renny</option>
+        <option value="Rahmat hayatul alamsyah siregar">Rahmat hayatul alamsyah siregar</option>
+        <option value="Ramadhan saputra">Ramadhan saputra</option>
+        <option value="Rininta Rizki Nst">Rininta Rizki Nst</option>
+        <option value="Rizki Fauzi Batubara">Rizki Fauzi Batubara</option>
+        <option value="Romadon">Romadon</option>
+        <option value="Sony Baylano Sebayang">Sony Baylano Sebayang</option>
+        <option value="Tengku Hasibuan">Tengku Hasibuan</option>
+        <option value="Wawan Lubis">Wawan Lubis</option>
+        <option value="Yunan Adlim Hasibun">Yunan Adlim Hasibun</option>
         <option value="Lainnya">-- Nama Lainnya (Ketik Manual) --</option>
       </select>
       <input type="text" id="namaManual" placeholder="Ketik nama karyawan di sini..." style="display: none; margin-top: 10px;">
@@ -100,109 +125,8 @@
     </div>
     <div class="form-group"><label>Uraian tugas:</label><textarea name="uraian" rows="3" required></textarea></div>
 
-    <!-- SEKSI 1 -->
-    <div class="section-title">Berhenti, Berpikir, dan Bersiap untuk tugas</div>
-    <div class="section-header-labels">
-      <span>Daftar Periksa</span>
-      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: black;">Ya</span><span style="color: red;">Tdk</span></div>
-    </div>
-    <script>
-      const qs1 = [
-        "Jika ada prosedur atau petunjuk kerja untuk tugas tersebut, apakah saya mengetahuinya?",
-        "Apakah saya sehat untuk tugas tersebut - mis: bebas dari kelelahan, cedera, awas, dan perhatian tidak teralihkan?",
-        "Apakah saya terlatih, kompeten, dan diberi wewenang untuk tugas ini?",
-        "Apakah saya memiliki perkakas, peralatan, and APD yang sesuai?"
-      ];
-      for(let i=1; i<=4; i++) {
-        document.write(`
-        <div class="question-card">
-          <div class="question-body">
-            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs1[i-1]}</span></div>
-            <div class="question-options">
-              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-hitam" required></label>
-              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-merah"></label>
-            </div>
-          </div>
-          <div id="risk-box-${i}" class="risk-box">
-            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
-            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
-            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
-          </div>
-        </div>`);
-      }
-    </script>
-
-    <!-- SEKSI 2 -->
-    <div class="section-title">Identifikasi Bahaya</div>
-    <div class="section-header-labels">
-      <span>Daftar Periksa</span>
-      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: red;">Ya</span><span style="color: black;">Tdk</span></div>
-    </div>
-    <script>
-      const qs2 = [
-        "Apakah saya dapat mengalami keseleo, atau apakah posisi ergonomis saya buruk?",
-        "Akankah saya berada dalam bahaya atau terjebak di dalam atau di antara sesuatu?",
-        "Apakah saya bisa tergelincir atau tersandung sesuatu?",
-        "Apakah saya bisa jatuh ke atau dari sesuatu?",
-        "Apakah sesuatu bisa jatuh menimpa saya atau orang lain?",
-        "Apakah saya bisa kontak dengan zat-zat berbahaya?",
-        "Apakah saya mengoperasikan peralatan didekat manusia, bahan peledak, atau peralatan lain?",
-        "Apakah kondisi cuaca/lingkungan kerja memengaruhi kegiatan ini?",
-        "Apakah saya bisa menimbulkan dampak pada air, tanah, udara, atau masyarakat?",
-        "Apakah ada bahaya lain? Apakah Sumber Energi sudah dipertimbangkan?"
-      ];
-      for(let i=5; i<=14; i++) {
-        document.write(`
-        <div class="question-card">
-          <div class="question-body">
-            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs2[i-5]}</span></div>
-            <div class="question-options">
-              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-merah" required></label>
-              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-hitam"></label>
-            </div>
-          </div>
-          <div id="risk-box-${i}" class="risk-box">
-            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
-            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
-            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
-          </div>
-        </div>`);
-      }
-    </script>
-
-    <!-- SEKSI 3 -->
-    <div class="section-title">Kendali Pencegahan</div>
-    <div class="section-header-labels">
-      <span>Daftar Periksa</span>
-      <div style="display: flex; gap: 40px; padding-right: 25px;"><span style="color: red;">Ya</span><span style="color: black;">Tdk</span></div>
-    </div>
-    <script>
-      const qs3 = [
-        "Apakah saya membutuhkan izin kerja atau sertifikat yang sesuai?",
-        "Apakah saya harus mengisolasi sumber energi dan menguji saat peralatan tidak terhubung ke catu daya?",
-        "Apakah ada perubahan pada proses, prosedur, peralatan, atau desain (MoC)?",
-        "Apakah saya harus memeriksa peralatan sebelum memulai pekerjaan?",
-        "Apakah saya membutuhkan APD tambahan untuk tugas tersebut?",
-        "Apakah saya membutuhkan komunikasi positif untuk memastikan orang lain menyadari kehadiran saya?"
-      ];
-      for(let i=15; i<=20; i++) {
-        document.write(`
-        <div class="question-card">
-          <div class="question-body">
-            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${qs3[i-15]}</span></div>
-            <div class="question-options">
-              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="radio-merah" required></label>
-              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="radio-hitam"></label>
-            </div>
-          </div>
-          <div id="risk-box-${i}" class="risk-box">
-            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
-            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
-            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
-          </div>
-        </div>`);
-      }
-    </script>
+    <!-- AREA UNTUK SOAL OTOMATIS -->
+    <div id="tempatPertanyaan"></div>
 
     <!-- DATA HIDDEN & SUBMIT -->
     <input type="hidden" name="detailBahaya" id="detailBahayaHidden">
@@ -237,10 +161,79 @@
   const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec; 
   // ----------------------------------------------------------
 
+  // --- GENERATOR SOAL OTOMATIS ---
+  const qs1 = [
+    "Jika ada prosedur atau petunjuk kerja untuk tugas tersebut, apakah saya mengetahuinya?",
+    "Apakah saya sehat untuk tugas tersebut - mis: bebas dari kelelahan, cedera, awas, dan perhatian tidak teralihkan?",
+    "Apakah saya terlatih, kompeten, dan diberi wewenang untuk tugas ini?",
+    "Apakah saya memiliki perkakas, peralatan, and APD yang sesuai?"
+  ];
+  const qs2 = [
+    "Apakah saya dapat mengalami keseleo, atau apakah posisi ergonomis saya buruk?",
+    "Akankah saya berada dalam bahaya atau terjebak di dalam atau di antara sesuatu?",
+    "Apakah saya bisa tergelincir atau tersandung sesuatu?",
+    "Apakah saya bisa jatuh ke atau dari sesuatu?",
+    "Apakah sesuatu bisa jatuh menimpa saya atau orang lain?",
+    "Apakah saya bisa kontak dengan zat-zat berbahaya?",
+    "Apakah saya mengoperasikan peralatan didekat manusia, bahan peledak, atau peralatan lain?",
+    "Apakah kondisi cuaca/lingkungan kerja memengaruhi kegiatan ini?",
+    "Apakah saya bisa menimbulkan dampak pada air, tanah, udara, atau masyarakat?",
+    "Apakah ada bahaya lain? Apakah Sumber Energi sudah dipertimbangkan?"
+  ];
+  const qs3 = [
+    "Apakah saya membutuhkan izin kerja atau sertifikat yang sesuai?",
+    "Apakah saya harus mengisolasi sumber energi dan menguji saat peralatan tidak terhubung ke catu daya?",
+    "Apakah ada perubahan pada proses, prosedur, peralatan, atau desain (MoC)?",
+    "Apakah saya harus memeriksa peralatan sebelum memulai pekerjaan?",
+    "Apakah saya membutuhkan APD tambahan untuk tugas tersebut?",
+    "Apakah saya membutuhkan komunikasi positif untuk memastikan orang lain menyadari kehadiran saya?"
+  ];
+
+  let htmlPertanyaan = '';
+  
+  function buatSeksi(judul, labelYa, labelTdk, startIndex, questions, isRedOnYa) {
+    let html = `<div class="section-title">${judul}</div>
+                <div class="section-header-labels">
+                  <span>Daftar Periksa</span>
+                  <div style="display: flex; gap: 40px; padding-right: 25px;">
+                    <span style="color: ${isRedOnYa ? 'red' : 'black'};">${labelYa}</span>
+                    <span style="color: ${isRedOnYa ? 'black' : 'red'};">${labelTdk}</span>
+                  </div>
+                </div>`;
+    
+    questions.forEach((q, idx) => {
+      let i = startIndex + idx;
+      let classYa = isRedOnYa ? 'radio-merah' : 'radio-hitam';
+      let classTdk = isRedOnYa ? 'radio-hitam' : 'radio-merah';
+      html += `
+      <div class="question-card">
+        <div class="question-body">
+          <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${q}</span></div>
+          <div class="question-options">
+            <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="${classYa}" required onchange="periksaKondisiMerah()"></label>
+            <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="${classTdk}" onchange="periksaKondisiMerah()"></label>
+          </div>
+        </div>
+        <div id="risk-box-${i}" class="risk-box">
+          <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+          <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+          <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+        </div>
+      </div>`;
+    });
+    return html;
+  }
+
+  htmlPertanyaan += buatSeksi("Berhenti, Berpikir, dan Bersiap untuk tugas", "Ya", "Tdk", 1, qs1, false);
+  htmlPertanyaan += buatSeksi("Identifikasi Bahaya", "Ya", "Tdk", 5, qs2, true);
+  htmlPertanyaan += buatSeksi("Kendali Pencegahan", "Ya", "Tdk", 15, qs3, true);
+
+  document.getElementById('tempatPertanyaan').innerHTML = htmlPertanyaan;
+
+  // --- LOGIKA UTAMA APLIKASI ---
   let gpsDiizinkan = false; 
   let dataOffline = JSON.parse(localStorage.getItem('take5_offline')) || [];
 
-  // 1. CEK DATA OFFLINE SAAT APLIKASI DIBUKA
   function periksaDataOffline() {
     const btnSync = document.getElementById('btnSync');
     const countOffline = document.getElementById('countOffline');
@@ -251,12 +244,12 @@
       btnSync.style.display = 'none';
     }
   }
+
   window.onload = function() {
     dapatkanLokasi();
     periksaDataOffline();
   };
 
-  // 2. FUNGSI GPS (Diperbolehkan Bypass Saat Offline Murni)
   function dapatkanLokasi() {
     const btnSubmit = document.getElementById('btnSubmit');
     if (navigator.geolocation) {
@@ -280,7 +273,7 @@
     }
   }
 
-  // ... (LOGIKA CASCADE LOKASI & DROPDOWN NAMA TETAP SAMA SEPERTI SEBELUMNYA) ...
+  // LOGIKA DROPDOWN & CASCADE
   const dataLokasi = {
     "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
     "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
@@ -299,13 +292,16 @@
     const elemenLokasi2 = document.getElementById('lokasi2');
     elemenLokasi2.innerHTML = '<option value="">-- Pilih Area Level 2 --</option>';
     if (pilihanLevel1 && dataLokasi[pilihanLevel1]) {
-      dataLokasi[pilihanLevel1].forEach(item => {
-        elemenLokasi2.appendChild(new Option(item, item));
+      dataLokasi[pilihanLevel1].forEach(function(item) {
+        const opsi = document.createElement('option');
+        opsi.value = item;
+        opsi.innerText = item;
+        elemenLokasi2.appendChild(opsi);
       });
     }
   });
 
-  // LOGIKA WARNA MERAH
+  // LOGIKA KOTAK RISIKO MERAH
   function periksaKondisiMerah() {
     for (let i = 1; i <= 20; i++) {
       const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
@@ -315,13 +311,19 @@
         if (i <= 4 && checkedRadio.value === 'Tdk') isRed = true;
         if (i >= 5 && checkedRadio.value === 'Ya') isRed = true;
       }
-      if (isRed) { riskBox.style.display = 'block'; riskBox.querySelector('.dynamic-bahaya').required = true; riskBox.querySelector('.dynamic-kendali').required = true; } 
-      else { riskBox.style.display = 'none'; riskBox.querySelector('.dynamic-bahaya').required = false; riskBox.querySelector('.dynamic-kendali').required = false; }
+      if (isRed) { 
+        riskBox.style.display = 'block'; 
+        riskBox.querySelector('.dynamic-bahaya').required = true; 
+        riskBox.querySelector('.dynamic-kendali').required = true; 
+      } else { 
+        riskBox.style.display = 'none'; 
+        riskBox.querySelector('.dynamic-bahaya').required = false; 
+        riskBox.querySelector('.dynamic-kendali').required = false; 
+      }
     }
   }
-  document.querySelectorAll('input[type="radio"]').forEach(radio => radio.addEventListener('change', periksaKondisiMerah));
 
-  // 3. LOGIKA SUBMIT DATA (FETCH API)
+  // LOGIKA SUBMIT (FETCH API)
   document.getElementById('checklistForm').addEventListener('submit', function(e) {
     e.preventDefault(); 
     if (!gpsDiizinkan && navigator.onLine) {
@@ -379,7 +381,7 @@
       btnSubmit.disabled = false; btnSubmit.innerText = 'Kirim Checklist Data';
       periksaDataOffline(); resetFormulir();
     } else {
-      // MODE ONLINE (KIRIM PAKAI FETCH KE GOOGLE API)
+      // MODE ONLINE (FETCH)
       fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -400,7 +402,6 @@
     }
   });
 
-  // TAMPILAN SUKSES
   function tampilkanSukses(hasHazards, recapHTML) {
     document.getElementById('checklistForm').style.display = 'none';
     document.getElementById('summaryPage').style.display = 'block';
@@ -428,7 +429,7 @@
     periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 4. FUNGSI SINKRONISASI
+  // LOGIKA SINKRONISASI OFFLINE
   function sinkronisasiOffline() {
     if (!navigator.onLine) { alert("Anda masih Offline. Cari sinyal terlebih dahulu!"); return; }
     const btnSync = document.getElementById('btnSync');
