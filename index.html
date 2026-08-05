@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daftar Periksa 5 Langkah!</title>
   
-  <!-- PEMANGGIL MANIFEST AGAR JADI APLIKASI -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#3498db">
 
@@ -149,7 +148,89 @@
 
 </div>
 
+<!-- SCRIPT 1: GENERATOR SOAL -->
 <script>
+  try {
+    const qs1 = [
+      "Jika ada prosedur atau petunjuk kerja untuk tugas tersebut, apakah saya mengetahuinya?",
+      "Apakah saya sehat untuk tugas tersebut - mis: bebas dari kelelahan, cedera, awas, dan perhatian tidak teralihkan?",
+      "Apakah saya terlatih, kompeten, dan diberi wewenang untuk tugas ini?",
+      "Apakah saya memiliki perkakas, peralatan, and APD yang sesuai?"
+    ];
+    const qs2 = [
+      "Apakah saya dapat mengalami keseleo, atau apakah posisi ergonomis saya buruk?",
+      "Akankah saya berada dalam bahaya atau terjebak di dalam atau di antara sesuatu?",
+      "Apakah saya bisa tergelincir atau tersandung sesuatu?",
+      "Apakah saya bisa jatuh ke atau dari sesuatu?",
+      "Apakah sesuatu bisa jatuh menimpa saya atau orang lain?",
+      "Apakah saya bisa kontak dengan zat-zat berbahaya?",
+      "Apakah saya mengoperasikan peralatan didekat manusia, bahan peledak, atau peralatan lain?",
+      "Apakah kondisi cuaca/lingkungan kerja memengaruhi kegiatan ini?",
+      "Apakah saya bisa menimbulkan dampak pada air, tanah, udara, atau masyarakat?",
+      "Apakah ada bahaya lain? Apakah Sumber Energi sudah dipertimbangkan?"
+    ];
+    const qs3 = [
+      "Apakah saya membutuhkan izin kerja atau sertifikat yang sesuai?",
+      "Apakah saya harus mengisolasi sumber energi dan menguji saat peralatan tidak terhubung ke catu daya?",
+      "Apakah ada perubahan pada proses, prosedur, peralatan, atau desain (MoC)?",
+      "Apakah saya harus memeriksa peralatan sebelum memulai pekerjaan?",
+      "Apakah saya membutuhkan APD tambahan untuk tugas tersebut?",
+      "Apakah saya membutuhkan komunikasi positif untuk memastikan orang lain menyadari kehadiran saya?"
+    ];
+
+    let htmlPertanyaan = '';
+    
+    function buatSeksi(judul, labelYa, labelTdk, startIndex, questions, isRedOnYa) {
+      let html = `<div class="section-title">${judul}</div>
+                  <div class="section-header-labels">
+                    <span>Daftar Periksa</span>
+                    <div style="display: flex; gap: 40px; padding-right: 25px;">
+                      <span style="color: ${isRedOnYa ? 'red' : 'black'};">${labelYa}</span>
+                      <span style="color: ${isRedOnYa ? 'black' : 'red'};">${labelTdk}</span>
+                    </div>
+                  </div>`;
+      
+      questions.forEach((q, idx) => {
+        let i = startIndex + idx;
+        let classYa = isRedOnYa ? 'radio-merah' : 'radio-hitam';
+        let classTdk = isRedOnYa ? 'radio-hitam' : 'radio-merah';
+        html += `
+        <div class="question-card">
+          <div class="question-body">
+            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${q}</span></div>
+            <div class="question-options">
+              <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="${classYa}" required onchange="periksaKondisiMerah()"></label>
+              <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="${classTdk}" onchange="periksaKondisiMerah()"></label>
+            </div>
+          </div>
+          <div id="risk-box-${i}" class="risk-box">
+            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+          </div>
+        </div>`;
+      });
+      return html;
+    }
+
+    htmlPertanyaan += buatSeksi("Berhenti, Berpikir, dan Bersiap untuk tugas", "Ya", "Tdk", 1, qs1, false);
+    htmlPertanyaan += buatSeksi("Identifikasi Bahaya", "Ya", "Tdk", 5, qs2, true);
+    htmlPertanyaan += buatSeksi("Kendali Pencegahan", "Ya", "Tdk", 15, qs3, true);
+
+    document.getElementById('tempatPertanyaan').innerHTML = htmlPertanyaan;
+  } catch (error) {
+    console.error("Gagal merender soal: ", error);
+  }
+</script>
+
+<!-- SCRIPT 2: LOGIKA DAN KONFIGURASI SISTEM -->
+<script>
+  // ----------------------------------------------------------
+  // LINK WEB APP AGAN SUDAH DISUNTIKKAN DENGAN AMAN DI SINI!
+  // ----------------------------------------------------------
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec"; 
+  // ----------------------------------------------------------
+
   // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
@@ -157,82 +238,19 @@
       .catch(err => console.log("Service Worker Gagal: ", err));
   }
 
-  // --- PASTIKAN URL WEB APP GOOGLE AGAN DITEMPEL DI SINI! ---
-  const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec; 
-  // ----------------------------------------------------------
-
-  // --- GENERATOR SOAL OTOMATIS ---
-  const qs1 = [
-    "Jika ada prosedur atau petunjuk kerja untuk tugas tersebut, apakah saya mengetahuinya?",
-    "Apakah saya sehat untuk tugas tersebut - mis: bebas dari kelelahan, cedera, awas, dan perhatian tidak teralihkan?",
-    "Apakah saya terlatih, kompeten, dan diberi wewenang untuk tugas ini?",
-    "Apakah saya memiliki perkakas, peralatan, and APD yang sesuai?"
-  ];
-  const qs2 = [
-    "Apakah saya dapat mengalami keseleo, atau apakah posisi ergonomis saya buruk?",
-    "Akankah saya berada dalam bahaya atau terjebak di dalam atau di antara sesuatu?",
-    "Apakah saya bisa tergelincir atau tersandung sesuatu?",
-    "Apakah saya bisa jatuh ke atau dari sesuatu?",
-    "Apakah sesuatu bisa jatuh menimpa saya atau orang lain?",
-    "Apakah saya bisa kontak dengan zat-zat berbahaya?",
-    "Apakah saya mengoperasikan peralatan didekat manusia, bahan peledak, atau peralatan lain?",
-    "Apakah kondisi cuaca/lingkungan kerja memengaruhi kegiatan ini?",
-    "Apakah saya bisa menimbulkan dampak pada air, tanah, udara, atau masyarakat?",
-    "Apakah ada bahaya lain? Apakah Sumber Energi sudah dipertimbangkan?"
-  ];
-  const qs3 = [
-    "Apakah saya membutuhkan izin kerja atau sertifikat yang sesuai?",
-    "Apakah saya harus mengisolasi sumber energi dan menguji saat peralatan tidak terhubung ke catu daya?",
-    "Apakah ada perubahan pada proses, prosedur, peralatan, atau desain (MoC)?",
-    "Apakah saya harus memeriksa peralatan sebelum memulai pekerjaan?",
-    "Apakah saya membutuhkan APD tambahan untuk tugas tersebut?",
-    "Apakah saya membutuhkan komunikasi positif untuk memastikan orang lain menyadari kehadiran saya?"
-  ];
-
-  let htmlPertanyaan = '';
-  
-  function buatSeksi(judul, labelYa, labelTdk, startIndex, questions, isRedOnYa) {
-    let html = `<div class="section-title">${judul}</div>
-                <div class="section-header-labels">
-                  <span>Daftar Periksa</span>
-                  <div style="display: flex; gap: 40px; padding-right: 25px;">
-                    <span style="color: ${isRedOnYa ? 'red' : 'black'};">${labelYa}</span>
-                    <span style="color: ${isRedOnYa ? 'black' : 'red'};">${labelTdk}</span>
-                  </div>
-                </div>`;
-    
-    questions.forEach((q, idx) => {
-      let i = startIndex + idx;
-      let classYa = isRedOnYa ? 'radio-merah' : 'radio-hitam';
-      let classTdk = isRedOnYa ? 'radio-hitam' : 'radio-merah';
-      html += `
-      <div class="question-card">
-        <div class="question-body">
-          <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${q}</span></div>
-          <div class="question-options">
-            <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="${classYa}" required onchange="periksaKondisiMerah()"></label>
-            <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="${classTdk}" onchange="periksaKondisiMerah()"></label>
-          </div>
-        </div>
-        <div id="risk-box-${i}" class="risk-box">
-          <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
-          <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
-          <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
-        </div>
-      </div>`;
-    });
-    return html;
+  // LOGIKA PENYIMPANAN OFFLINE YANG AMAN
+  let dataOffline = [];
+  try {
+    const simpanan = localStorage.getItem('take5_offline');
+    if (simpanan) {
+      dataOffline = JSON.parse(simpanan);
+    }
+  } catch (e) {
+    console.error("Gagal membaca memori offline", e);
+    dataOffline = [];
   }
 
-  htmlPertanyaan += buatSeksi("Berhenti, Berpikir, dan Bersiap untuk tugas", "Ya", "Tdk", 1, qs1, false);
-  htmlPertanyaan += buatSeksi("Identifikasi Bahaya", "Ya", "Tdk", 5, qs2, true);
-  htmlPertanyaan += buatSeksi("Kendali Pencegahan", "Ya", "Tdk", 15, qs3, true);
-
-  document.getElementById('tempatPertanyaan').innerHTML = htmlPertanyaan;
-
-  // --- LOGIKA UTAMA APLIKASI ---
   let gpsDiizinkan = false; 
-  let dataOffline = JSON.parse(localStorage.getItem('take5_offline')) || [];
 
   function periksaDataOffline() {
     const btnSync = document.getElementById('btnSync');
@@ -334,7 +352,6 @@
     const btnSubmit = document.getElementById('btnSubmit');
     btnSubmit.disabled = true; btnSubmit.innerText = 'Menyimpan...';
 
-    // Set nama final
     const dropdownVal = document.getElementById('namaDropdown').value;
     document.getElementById('namaFinal').value = (dropdownVal === 'Lainnya') ? document.getElementById('namaManual').value : dropdownVal;
 
@@ -353,7 +370,6 @@
     }
     document.getElementById('detailBahayaHidden').value = combinedText.join('\n\n');
 
-    // Objek Data
     const formData = {
       nama: document.getElementById('namaFinal').value,
       tanggal: document.querySelector('input[name="tanggal"]').value,
@@ -374,14 +390,12 @@
     };
 
     if (!navigator.onLine) {
-      // MODE OFFLINE 
       dataOffline.push(formData);
       localStorage.setItem('take5_offline', JSON.stringify(dataOffline));
       alert("⚠️ TIDAK ADA SINYAL!\n\nData disimpan di memori HP. Jangan lupa tekan tombol 'Sinkronisasi' saat kembali ke area bersinyal.");
       btnSubmit.disabled = false; btnSubmit.innerText = 'Kirim Checklist Data';
       periksaDataOffline(); resetFormulir();
     } else {
-      // MODE ONLINE (FETCH)
       fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -429,7 +443,6 @@
     periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // LOGIKA SINKRONISASI OFFLINE
   function sinkronisasiOffline() {
     if (!navigator.onLine) { alert("Anda masih Offline. Cari sinyal terlebih dahulu!"); return; }
     const btnSync = document.getElementById('btnSync');
