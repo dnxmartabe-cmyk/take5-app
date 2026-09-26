@@ -63,7 +63,7 @@
   <!-- FORM UTAMA -->
   <form id="checklistForm">
 
-    <!-- PENAMBAHAN DROPDOWN SITE -->
+    <!-- DROPDOWN SITE -->
     <div class="form-group">
       <label>Site</label>
       <select id="siteDropdown" name="site" required>
@@ -79,7 +79,7 @@
       </select>
     </div>
 
-    <!-- DROPDOWN NAMA DINAMIS -->
+    <!-- DROPDOWN NAMA -->
     <div class="form-group">
       <label>Nama</label>
       <select id="namaDropdown" required>
@@ -91,22 +91,22 @@
 
     <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
     
+    <!-- DROPDOWN LOKASI 1 -->
     <div class="form-group">
       <label>Lokasi (Level 1)</label>
       <select name="lokasi1" id="lokasi1" required>
-        <option value="">-- Pilih Area Utama --</option>
-        <option value="Office">Office</option>
-        <option value="Plant">Plant</option>
-        <option value="Maintenance">Maintenance</option>
-        <option value="PIT / Field">PIT / Field</option>
+        <option value="">-- Pilih Site Terlebih Dahulu --</option>
       </select>
     </div>
+
+    <!-- DROPDOWN LOKASI 2 -->
     <div class="form-group">
       <label>Lokasi (Level 2)</label>
       <select name="lokasi2" id="lokasi2" required>
         <option value="">-- Pilih Level 1 Terlebih Dahulu --</option>
       </select>
     </div>
+
     <div class="form-group">
       <label>Lokasi (Level 3) / Titik Spesifik</label>
       <input type="text" name="lokasi3" placeholder="Ketik detail spesifik area..." required>
@@ -229,7 +229,7 @@
     "Lati": [],
     "Martabe": [
       "Abdi pasaribu", "Abdul basir harahap", "Anugrah tri permana", "Baktiar Majid Nasution",
-      "Chichilia De Agustina Sihombing", "Deby ayu sabira", "Dimas Himawan nasution","Faddillah Candra",
+      "Chichilia De Agustina Sihombing", "Deby ayu sabira", "Dimas Himawan nasution",
       "Ijun pasahri siregar", "Irmadani", "Ismail saleh siregar", "Jonson Hutagalung",
       "Laina Tussyaripah", "Muksin sihombing", "Noto prayitno", "Patima Renny",
       "Rahmat hayatul alamsyah siregar", "Ramadhan saputra", "Rizki Fauzi Batubara",
@@ -251,6 +251,27 @@
       "Yofi Annor", "Yunus A. Abdullah"
     ],
     "Sambarata": []
+  };
+
+  // DATABASE LOKASI
+  // 1. Data Default (Untuk Semua Site Kecuali MSM)
+  const dataLokasiDefault = {
+    "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
+    "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
+    "Maintenance": ["Kontainer Penyimpanan", "Tool Room", "Area Welding", "Area Dangerous Good", "Workshop", "Other"],
+    "PIT / Field": ["Purnama", "Ramba Joring", "Barani", "Highland Magazine", "Lowland Magazine", "Other"]
+  };
+
+  // 2. Data Khusus MSM
+  const dataLokasiMSM = {
+    "Office": dataLokasiDefault["Office"],
+    "Plant": dataLokasiDefault["Plant"],
+    "Maintenance": dataLokasiDefault["Maintenance"],
+    "Pit/Field": [
+      "Pit Araren 7", "Pit Araren 8", "Pit Alaskar", "Pit Toka 7", 
+      "Pit Toka Puncak", "Pit Toka 6", "Pit Marawuwung Atas", "Pit Marawuwung Bawah"
+    ],
+    "Underground": ["RL 120", "RL 100"]
   };
 
   // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
@@ -313,60 +334,68 @@
     }
   }
 
-  // LOGIKA DROPDOWN NAMA CASCADE BERDASARKAN SITE
+  // LOGIKA KETIKA SITE DIPILIH (Menampilkan Nama & Lokasi 1)
   document.getElementById('siteDropdown').addEventListener('change', function() {
     const siteTerpilih = this.value;
+    
+    // 1. UPDATE NAMA KARYAWAN
     const elemenNama = document.getElementById('namaDropdown');
     const manualInput = document.getElementById('namaManual');
-    
     elemenNama.innerHTML = '<option value="">-- Pilih Nama Karyawan --</option>';
-    manualInput.style.display = 'none'; 
-    manualInput.required = false; 
-    manualInput.value = '';
+    manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = '';
 
     if (siteTerpilih && dataKaryawan[siteTerpilih]) {
-      // Mengurutkan nama sesuai abjad
       const namaUrut = dataKaryawan[siteTerpilih].sort();
       namaUrut.forEach(function(nama) {
         const opsi = document.createElement('option');
-        opsi.value = nama;
-        opsi.innerText = nama;
+        opsi.value = nama; opsi.innerText = nama;
         elemenNama.appendChild(opsi);
       });
     }
-
-    // Selalu tambahkan opsi "Lainnya" di akhir
     const opsiLainnya = document.createElement('option');
-    opsiLainnya.value = 'Lainnya';
-    opsiLainnya.innerText = '-- Nama Lainnya (Ketik Manual) --';
+    opsiLainnya.value = 'Lainnya'; opsiLainnya.innerText = '-- Nama Lainnya (Ketik Manual) --';
     elemenNama.appendChild(opsiLainnya);
+
+    // 2. UPDATE LOKASI 1
+    const elemenLokasi1 = document.getElementById('lokasi1');
+    const elemenLokasi2 = document.getElementById('lokasi2');
+    elemenLokasi1.innerHTML = '<option value="">-- Pilih Area Utama --</option>';
+    elemenLokasi2.innerHTML = '<option value="">-- Pilih Level 1 Terlebih Dahulu --</option>';
+
+    if (siteTerpilih) {
+      let sumberDataLokasi = (siteTerpilih === 'MSM') ? dataLokasiMSM : dataLokasiDefault;
+      Object.keys(sumberDataLokasi).forEach(function(level1) {
+        const opsi = document.createElement('option');
+        opsi.value = level1; opsi.innerText = level1;
+        elemenLokasi1.appendChild(opsi);
+      });
+    }
   });
 
+  // LOGIKA JIKA PILIH "Lainnya" DI NAMA KARYAWAN
   document.getElementById('namaDropdown').addEventListener('change', function() {
     const manualInput = document.getElementById('namaManual');
     if (this.value === 'Lainnya') { manualInput.style.display = 'block'; manualInput.required = true; } 
     else { manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = ''; }
   });
-
-  // LOGIKA DROPDOWN & CASCADE AREA LEVEL
-  const dataLokasi = {
-    "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
-    "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
-    "Maintenance": ["Kontainer Penyimpanan", "Tool Room", "Area Welding", "Area Dangerous Good", "Workshop", "Other"],
-    "PIT / Field": ["Purnama", "Ramba Joring", "Barani", "Highland Magazine", "Lowland Magazine", "Other"]
-  };
   
+  // LOGIKA MENAMPILKAN LOKASI 2 SAAT LOKASI 1 DIPILIH
   document.getElementById('lokasi1').addEventListener('change', function() {
     const pilihanLevel1 = this.value;
+    const siteTerpilih = document.getElementById('siteDropdown').value;
     const elemenLokasi2 = document.getElementById('lokasi2');
+    
     elemenLokasi2.innerHTML = '<option value="">-- Pilih Area Level 2 --</option>';
-    if (pilihanLevel1 && dataLokasi[pilihanLevel1]) {
-      dataLokasi[pilihanLevel1].forEach(function(item) {
-        const opsi = document.createElement('option');
-        opsi.value = item;
-        opsi.innerText = item;
-        elemenLokasi2.appendChild(opsi);
-      });
+    
+    if (siteTerpilih && pilihanLevel1) {
+      let sumberDataLokasi = (siteTerpilih === 'MSM') ? dataLokasiMSM : dataLokasiDefault;
+      if (sumberDataLokasi[pilihanLevel1]) {
+        sumberDataLokasi[pilihanLevel1].forEach(function(item) {
+          const opsi = document.createElement('option');
+          opsi.value = item; opsi.innerText = item;
+          elemenLokasi2.appendChild(opsi);
+        });
+      }
     }
   });
 
@@ -494,9 +523,15 @@
     document.getElementById('btnSubmit').disabled = false;
     periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // Reset dropdown nama
+    // Reset dropdown nama dan lokasi ke kondisi terkunci
     const elemenNama = document.getElementById('namaDropdown');
+    const elemenLokasi1 = document.getElementById('lokasi1');
+    const elemenLokasi2 = document.getElementById('lokasi2');
+    
     elemenNama.innerHTML = '<option value="">-- Pilih Site Terlebih Dahulu --</option>';
+    elemenLokasi1.innerHTML = '<option value="">-- Pilih Site Terlebih Dahulu --</option>';
+    elemenLokasi2.innerHTML = '<option value="">-- Pilih Level 1 Terlebih Dahulu --</option>';
+    
     document.getElementById('namaManual').style.display = 'none';
   }
 
