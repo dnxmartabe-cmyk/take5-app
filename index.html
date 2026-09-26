@@ -62,39 +62,28 @@
 
   <!-- FORM UTAMA -->
   <form id="checklistForm">
+
+    <!-- PENAMBAHAN DROPDOWN SITE -->
+    <div class="form-group">
+      <label>Site</label>
+      <select id="siteDropdown" name="site" required>
+        <option value="">-- Pilih Site --</option>
+        <option value="Baleh Dam">Baleh Dam</option>
+        <option value="Binungan">Binungan</option>
+        <option value="BSS melak">BSS melak</option>
+        <option value="Gurimbang">Gurimbang</option>
+        <option value="Lati">Lati</option>
+        <option value="Martabe">Martabe</option>
+        <option value="MSM">MSM</option>
+        <option value="Sambarata">Sambarata</option>
+      </select>
+    </div>
+
+    <!-- DROPDOWN NAMA DINAMIS -->
     <div class="form-group">
       <label>Nama</label>
       <select id="namaDropdown" required>
-        <option value="">-- Pilih Nama Karyawan --</option>
-        <option value="Abdi pasaribu">Abdi pasaribu</option>
-        <option value="Abdul basir harahap">Abdul basir harahap</option>
-        <option value="Adrian Hakim">Adrian Hakim</option>
-        <option value="Anugrah tri permana">Anugrah tri permana</option>
-        <option value="Baktiar Majid Nasution">Baktiar Majid Nasution</option>
-        <option value="Chichilia De Agustina Sihombing">Chichilia De Agustina Sihombing</option>
-        <option value="Deby ayu sabira">Deby ayu sabira</option>
-        <option value="Dimas Himawan nasution">Dimas Himawan nasution</option>
-        <option value="Faddillah Candra">Faddillah Candra</option>
-        <option value="Fathur Rozaq">Fathur Rozaq</option>
-        <option value="Herry Saputra">Herry Saputra</option>
-        <option value="Ijun pasahri siregar">Ijun pasahri siregar</option>
-        <option value="Irmadani">Irmadani</option>
-        <option value="Ismail saleh siregar">Ismail saleh siregar</option>
-        <option value="Jonson Hutagalung">Jonson Hutagalung</option>
-        <option value="Laina Tussyaripah">Laina Tussyaripah</option>
-        <option value="Muksin sihombing">Muksin sihombing</option>
-        <option value="Noto prayitno">Noto prayitno</option>
-        <option value="Patima Renny">Patima Renny</option>
-        <option value="Rahmat hayatul alamsyah siregar">Rahmat hayatul alamsyah siregar</option>
-        <option value="Ramadhan saputra">Ramadhan saputra</option>
-        <option value="Rininta Rizki Nst">Rininta Rizki Nst</option>
-        <option value="Rizki Fauzi Batubara">Rizki Fauzi Batubara</option>
-        <option value="Romadon">Romadon</option>
-        <option value="Sony Baylano Sebayang">Sony Baylano Sebayang</option>
-        <option value="Tengku Hasibuan">Tengku Hasibuan</option>
-        <option value="Wawan Lubis">Wawan Lubis</option>
-        <option value="Yunan Adlim Hasibun">Yunan Adlim Hasibun</option>
-        <option value="Lainnya">-- Nama Lainnya (Ketik Manual) --</option>
+        <option value="">-- Pilih Site Terlebih Dahulu --</option>
       </select>
       <input type="text" id="namaManual" placeholder="Ketik nama karyawan di sini..." style="display: none; margin-top: 10px;">
       <input type="hidden" name="nama" id="namaFinal">
@@ -231,6 +220,39 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec"; 
   // ----------------------------------------------------------
 
+  // DATABASE KARYAWAN BERDASARKAN SITE
+  const dataKaryawan = {
+    "Baleh Dam": [],
+    "Binungan": [],
+    "BSS melak": [],
+    "Gurimbang": [],
+    "Lati": [],
+    "Martabe": [
+      "Abdi pasaribu", "Abdul basir harahap", "Anugrah tri permana", "Baktiar Majid Nasution",
+      "Chichilia De Agustina Sihombing", "Deby ayu sabira", "Dimas Himawan nasution",
+      "Ijun pasahri siregar", "Irmadani", "Ismail saleh siregar", "Jonson Hutagalung",
+      "Laina Tussyaripah", "Muksin sihombing", "Noto prayitno", "Patima Renny",
+      "Rahmat hayatul alamsyah siregar", "Ramadhan saputra", "Rizki Fauzi Batubara",
+      "Romadon", "Wawan Lubis", "Yunan Adlim Hasibun"
+    ],
+    "MSM": [
+      "Albaihaki Blongkod", "Alexandro Mogontha", "Andryanto", "Arhani Sadi", "Arif Metanoia Pekade",
+      "Arlando Djuan Takumansang", "Aulia Majid", "Axsel M Kalengkongan", "Beno Yohanis Tangkuman",
+      "Dejan Gerald P Lumatoauw", "Demsy Wesli Rau", "Deri Ardiana Launde", "Dody Salman",
+      "Erik Takahindangeng", "Erwin", "Geofanggie Efraim Supit", "Grevito Pinontoan", "Gunawan",
+      "Iman Candra", "Irfan Ihsan Izudin", "Ivan Mumu", "James Reinold Lumolos", "Jemmy Benyamin Porayow",
+      "Josept Novel Makaado", "Jundi Rodhi Kusnanto", "Kefin Prong", "Kevin Gibran Mamoto",
+      "Kristofel Karame", "Kurnianto", "Lodewik Wakkary", "Marthin Pangaribuan", "Meisye Maramis",
+      "Meyta Koloay", "Muhammad Ayub S A", "Nisrina Nurul Iman", "Rahman Pulumoduyo", "Ramdani Wael",
+      "Ramses Tandi Salu", "Reynaldo Luly Paruntu", "Ridwan Ridho Humintau", "Rifki Lapu",
+      "Rima Naomi Pangemanan", "Rivaldo Augusto Harindah", "Rivaldy Renaldo Yusuf", "Soeharjo Tarimakase",
+      "Stefanus Karundeng", "Sthevy Rondonuwu Salmon", "Surman Mangentiku", "Syahru Ramadani",
+      "Teguh Setyabudhi", "Vanesa Marsya Medellu", "Vrendly Kivly Zakaria Moningkey", "Wawan Rivaldo Piter",
+      "Yofi Annor", "Yunus A. Abdullah"
+    ],
+    "Sambarata": []
+  };
+
   // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
@@ -291,7 +313,42 @@
     }
   }
 
-  // LOGIKA DROPDOWN & CASCADE
+  // LOGIKA DROPDOWN NAMA CASCADE BERDASARKAN SITE
+  document.getElementById('siteDropdown').addEventListener('change', function() {
+    const siteTerpilih = this.value;
+    const elemenNama = document.getElementById('namaDropdown');
+    const manualInput = document.getElementById('namaManual');
+    
+    elemenNama.innerHTML = '<option value="">-- Pilih Nama Karyawan --</option>';
+    manualInput.style.display = 'none'; 
+    manualInput.required = false; 
+    manualInput.value = '';
+
+    if (siteTerpilih && dataKaryawan[siteTerpilih]) {
+      // Mengurutkan nama sesuai abjad
+      const namaUrut = dataKaryawan[siteTerpilih].sort();
+      namaUrut.forEach(function(nama) {
+        const opsi = document.createElement('option');
+        opsi.value = nama;
+        opsi.innerText = nama;
+        elemenNama.appendChild(opsi);
+      });
+    }
+
+    // Selalu tambahkan opsi "Lainnya" di akhir
+    const opsiLainnya = document.createElement('option');
+    opsiLainnya.value = 'Lainnya';
+    opsiLainnya.innerText = '-- Nama Lainnya (Ketik Manual) --';
+    elemenNama.appendChild(opsiLainnya);
+  });
+
+  document.getElementById('namaDropdown').addEventListener('change', function() {
+    const manualInput = document.getElementById('namaManual');
+    if (this.value === 'Lainnya') { manualInput.style.display = 'block'; manualInput.required = true; } 
+    else { manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = ''; }
+  });
+
+  // LOGIKA DROPDOWN & CASCADE AREA LEVEL
   const dataLokasi = {
     "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
     "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
@@ -299,12 +356,6 @@
     "PIT / Field": ["Purnama", "Ramba Joring", "Barani", "Highland Magazine", "Lowland Magazine", "Other"]
   };
   
-  document.getElementById('namaDropdown').addEventListener('change', function() {
-    const manualInput = document.getElementById('namaManual');
-    if (this.value === 'Lainnya') { manualInput.style.display = 'block'; manualInput.required = true; } 
-    else { manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = ''; }
-  });
-
   document.getElementById('lokasi1').addEventListener('change', function() {
     const pilihanLevel1 = this.value;
     const elemenLokasi2 = document.getElementById('lokasi2');
@@ -371,6 +422,7 @@
     document.getElementById('detailBahayaHidden').value = combinedText.join('\n\n');
 
     const formData = {
+      site: document.getElementById('siteDropdown').value,
       nama: document.getElementById('namaFinal').value,
       tanggal: document.querySelector('input[name="tanggal"]').value,
       lokasi1: document.getElementById('lokasi1').value, lokasi2: document.getElementById('lokasi2').value,
@@ -441,6 +493,11 @@
     gpsDiizinkan = false; 
     document.getElementById('btnSubmit').disabled = false;
     periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Reset dropdown nama
+    const elemenNama = document.getElementById('namaDropdown');
+    elemenNama.innerHTML = '<option value="">-- Pilih Site Terlebih Dahulu --</option>';
+    document.getElementById('namaManual').style.display = 'none';
   }
 
   function sinkronisasiOffline() {
