@@ -28,6 +28,11 @@
     .option-label { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .radio-merah { accent-color: #e74c3c; transform: scale(1.5); cursor: pointer; }
     .radio-hitam { accent-color: #2c3e50; transform: scale(1.5); cursor: pointer; }
+    
+    /* Tambahan efek visual jika radio button di-disable */
+    input[type="radio"]:disabled { opacity: 0.4; cursor: not-allowed; }
+    .disabled-text { color: #bdc3c7; }
+
     .risk-box { display: none; background-color: #fff3cd; border-left: 5px solid #e74c3c; padding: 12px; margin-top: 12px; border-radius: 4px; }
     .risk-title { color: #c0392b; font-size: 14px; font-weight: bold; margin-bottom: 10px; display: block; border-bottom: 1px solid #f39c12; padding-bottom: 5px;}
     .sub-label { font-size: 13px; color: #d35400; font-weight: 600; display: block; margin-bottom: 4px; margin-top: 8px;}
@@ -126,7 +131,7 @@
   <!-- HALAMAN RINGKASAN -->
   <div id="summaryPage">
     <div id="summaryIcon" class="summary-success-icon">✅</div>
-    <div class="summary-title">Data Berhasil Disimpan!</div>
+    <div id="summaryTitle" class="summary-title">Data Berhasil Disimpan!</div>
     <div id="recapArea" class="recap-box">
       <h3>Daftar Temuan Bahaya & Kendali:</h3>
       <div id="recapContent"></div>
@@ -169,7 +174,8 @@
 
     let htmlPertanyaan = '';
     
-    function buatSeksi(judul, labelYa, labelTdk, startIndex, questions, isRedOnYa) {
+    // Fungsi buatSeksi dimodifikasi dengan parameter 'hasRiskBox'
+    function buatSeksi(judul, labelYa, labelTdk, startIndex, questions, isRedOnYa, hasRiskBox) {
       let html = `<div class="section-title">${judul}</div>
                   <div class="section-header-labels">
                     <span>Daftar Periksa</span>
@@ -183,28 +189,37 @@
         let i = startIndex + idx;
         let classYa = isRedOnYa ? 'radio-merah' : 'radio-hitam';
         let classTdk = isRedOnYa ? 'radio-hitam' : 'radio-merah';
+        
+        let riskBoxHTML = '';
+        if (hasRiskBox) {
+            riskBoxHTML = `
+            <div id="risk-box-${i}" class="risk-box">
+              <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
+              <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
+              <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
+            </div>`;
+        }
+
         html += `
-        <div class="question-card">
+        <div class="question-card" id="card-${i}">
           <div class="question-body">
-            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text">${q}</span></div>
+            <div class="question-text-area"><span class="q-number">${i}</span><span class="q-text" id="text-q${i}">${q}</span></div>
             <div class="question-options">
               <label class="option-label"><input type="radio" name="q${i}" value="Ya" class="${classYa}" required onchange="periksaKondisiMerah()"></label>
               <label class="option-label"><input type="radio" name="q${i}" value="Tdk" class="${classTdk}" onchange="periksaKondisiMerah()"></label>
             </div>
           </div>
-          <div id="risk-box-${i}" class="risk-box">
-            <span class="risk-title">⚠️ Temuan Risiko No ${i}</span>
-            <label class="sub-label">Detail Bahaya:</label><textarea class="dynamic-bahaya" rows="2" placeholder="Tuliskan bahaya yang ditemukan..."></textarea>
-            <label class="sub-label">Kendali / Tindakan Perbaikan:</label><textarea class="dynamic-kendali" rows="2" placeholder="Tuliskan tindakan perbaikan..."></textarea>
-          </div>
+          ${riskBoxHTML}
         </div>`;
       });
       return html;
     }
 
-    htmlPertanyaan += buatSeksi("Berhenti, Berpikir, dan Bersiap untuk tugas", "Ya", "Tdk", 1, qs1, false);
-    htmlPertanyaan += buatSeksi("Identifikasi Bahaya", "Ya", "Tdk", 5, qs2, true);
-    htmlPertanyaan += buatSeksi("Kendali Pencegahan", "Ya", "Tdk", 15, qs3, true);
+    // Soal 1-4 TIDAK ADA risk box (Parameter terakhir diset false)
+    htmlPertanyaan += buatSeksi("Berhenti, Berpikir, dan Bersiap untuk tugas", "Ya", "Tdk", 1, qs1, false, false);
+    // Soal sisanya ADA risk box (Parameter terakhir diset true)
+    htmlPertanyaan += buatSeksi("Identifikasi Bahaya", "Ya", "Tdk", 5, qs2, true, true);
+    htmlPertanyaan += buatSeksi("Kendali Pencegahan", "Ya", "Tdk", 15, qs3, true, true);
 
     document.getElementById('tempatPertanyaan').innerHTML = htmlPertanyaan;
   } catch (error) {
@@ -214,8 +229,6 @@
 
 <!-- SCRIPT 2: LOGIKA DAN KONFIGURASI SISTEM -->
 <script>
-  // ----------------------------------------------------------
-  // LINK WEB APP AGAN SUDAH DISUNTIKKAN DENGAN AMAN DI SINI!
   // ----------------------------------------------------------
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-ckJSG3ySJsW0bFGAw9LheFKCY_Ur8ROg2AKM8BgKVbLt4Y-utTSgLG0u5pVQ7-E1/exec"; 
   // ----------------------------------------------------------
@@ -254,7 +267,6 @@
   };
 
   // DATABASE LOKASI
-  // 1. Data Default (Untuk Semua Site Kecuali MSM)
   const dataLokasiDefault = {
     "Office": ["Kontainer Admin", "Kontainer Engineering", "Ruang Meeting", "Toilet", "Gudang", "Pantry", "Gazebo", "Other"],
     "Plant": ["Ribbon Blender", "Lab", "Meltdown", "Gudang AN", "Gudang Deto", "Raw Material Storage", "Tangki Emulsion", "Chemical Storage", "Other"],
@@ -262,7 +274,6 @@
     "PIT / Field": ["Purnama", "Ramba Joring", "Barani", "Highland Magazine", "Lowland Magazine", "Other"]
   };
 
-  // 2. Data Khusus MSM
   const dataLokasiMSM = {
     "Office": dataLokasiDefault["Office"],
     "Plant": dataLokasiDefault["Plant"],
@@ -274,14 +285,12 @@
     "Underground": ["RL 120", "RL 100"]
   };
 
-  // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(() => console.log("Service Worker Berhasil Terdaftar!"))
       .catch(err => console.log("Service Worker Gagal: ", err));
   }
 
-  // LOGIKA PENYIMPANAN OFFLINE YANG AMAN
   let dataOffline = [];
   try {
     const simpanan = localStorage.getItem('take5_offline');
@@ -334,11 +343,9 @@
     }
   }
 
-  // LOGIKA KETIKA SITE DIPILIH (Menampilkan Nama & Lokasi 1)
+  // LOGIKA SITE & NAMA
   document.getElementById('siteDropdown').addEventListener('change', function() {
     const siteTerpilih = this.value;
-    
-    // 1. UPDATE NAMA KARYAWAN
     const elemenNama = document.getElementById('namaDropdown');
     const manualInput = document.getElementById('namaManual');
     elemenNama.innerHTML = '<option value="">-- Pilih Nama Karyawan --</option>';
@@ -356,7 +363,6 @@
     opsiLainnya.value = 'Lainnya'; opsiLainnya.innerText = '-- Nama Lainnya (Ketik Manual) --';
     elemenNama.appendChild(opsiLainnya);
 
-    // 2. UPDATE LOKASI 1
     const elemenLokasi1 = document.getElementById('lokasi1');
     const elemenLokasi2 = document.getElementById('lokasi2');
     elemenLokasi1.innerHTML = '<option value="">-- Pilih Area Utama --</option>';
@@ -372,14 +378,12 @@
     }
   });
 
-  // LOGIKA JIKA PILIH "Lainnya" DI NAMA KARYAWAN
   document.getElementById('namaDropdown').addEventListener('change', function() {
     const manualInput = document.getElementById('namaManual');
     if (this.value === 'Lainnya') { manualInput.style.display = 'block'; manualInput.required = true; } 
     else { manualInput.style.display = 'none'; manualInput.required = false; manualInput.value = ''; }
   });
   
-  // LOGIKA MENAMPILKAN LOKASI 2 SAAT LOKASI 1 DIPILIH
   document.getElementById('lokasi1').addEventListener('change', function() {
     const pilihanLevel1 = this.value;
     const siteTerpilih = document.getElementById('siteDropdown').value;
@@ -399,17 +403,49 @@
     }
   });
 
-  // LOGIKA KOTAK RISIKO MERAH
+  // LOGIKA BLOKIR & KOTAK RISIKO MERAH
   function periksaKondisiMerah() {
-    for (let i = 1; i <= 20; i++) {
+    let invalidAwal = false;
+
+    // Cek Soal 1-4, jika ada yang "Tdk" maka form dianggap Invalid Awal
+    for (let i = 1; i <= 4; i++) {
+      const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+      if (checkedRadio && checkedRadio.value === 'Tdk') {
+        invalidAwal = true;
+      }
+    }
+
+    // Eksekusi Disable/Enable untuk soal 5-20
+    for (let i = 5; i <= 20; i++) {
+      const radios = document.querySelectorAll(`input[name="q${i}"]`);
+      const textLabel = document.getElementById(`text-q${i}`);
+      
+      radios.forEach(r => {
+        r.disabled = invalidAwal;
+        // Jika form diblokir, hilangkan pilihan yang terlanjur dipilih di bawah
+        if (invalidAwal) r.checked = false;
+      });
+
+      // Memberi efek abu-abu pada teks agar user sadar bagian ini dimatikan
+      if (invalidAwal) {
+        textLabel.classList.add('disabled-text');
+      } else {
+        textLabel.classList.remove('disabled-text');
+      }
+    }
+
+    // Tampilkan/Sembunyikan kotak risiko HANYA untuk soal 5-20
+    for (let i = 5; i <= 20; i++) {
       const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
       const riskBox = document.getElementById(`risk-box-${i}`);
+      if (!riskBox) continue; 
+      
       let isRed = false;
       if (checkedRadio) {
-        if (i <= 4 && checkedRadio.value === 'Tdk') isRed = true;
-        if (i >= 5 && checkedRadio.value === 'Ya') isRed = true;
+        if (checkedRadio.value === 'Ya') isRed = true; 
       }
-      if (isRed) { 
+      
+      if (isRed && !invalidAwal) { 
         riskBox.style.display = 'block'; 
         riskBox.querySelector('.dynamic-bahaya').required = true; 
         riskBox.querySelector('.dynamic-kendali').required = true; 
@@ -424,6 +460,36 @@
   // LOGIKA SUBMIT (FETCH API)
   document.getElementById('checklistForm').addEventListener('submit', function(e) {
     e.preventDefault(); 
+
+    // --- PENGECEKAN TAKE 5 TIDAK VALID (SOAL 1-4) ---
+    let isInvalidTake5 = false;
+    for (let i = 1; i <= 4; i++) {
+      const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+      if (checkedRadio && checkedRadio.value === 'Tdk') {
+        isInvalidTake5 = true;
+        break;
+      }
+    }
+
+    if (isInvalidTake5) {
+      document.getElementById('checklistForm').style.display = 'none';
+      document.getElementById('summaryPage').style.display = 'block';
+      window.scrollTo(0, 0); 
+      
+      // Tampilan Notifikasi Gagal/Ditolak
+      document.getElementById('summaryIcon').innerHTML = "🛑";
+      document.getElementById('summaryTitle').innerHTML = "Take5 anda tidak valid..!!!";
+      document.getElementById('summaryTitle').style.color = "#c0392b";
+      document.getElementById('recapArea').style.display = 'none';
+      
+      const sumMsg = document.getElementById('summaryMessage');
+      sumMsg.className = "summary-footer footer-merah";
+      sumMsg.innerHTML = "Pekerjaan tidak dapat dilakukan sebelum anda membaca prosedur/IK, berdiskusi dengan pengawas, mendapatkan pelatihan terlebih dahulu. Segera hubungi pengawas dan HSE incharge Di lokasi anda.";
+      
+      return; // Stop pengiriman data ke sheet/offline
+    }
+    // ------------------------------------------------
+
     if (!gpsDiizinkan && navigator.onLine) {
       alert("Akses lokasi (GPS) wajib diaktifkan!");
       dapatkanLokasi(); return; 
@@ -436,9 +502,9 @@
     document.getElementById('namaFinal').value = (dropdownVal === 'Lainnya') ? document.getElementById('namaManual').value : dropdownVal;
 
     let combinedText = []; let hasHazards = false; let recapHTML = "";
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 5; i <= 20; i++) { // Kotak bahaya hanya dilacak dari soal 5 ke atas
       const riskBox = document.getElementById(`risk-box-${i}`);
-      if (riskBox.style.display === 'block') {
+      if (riskBox && riskBox.style.display === 'block') {
          const bahaya = riskBox.querySelector('.dynamic-bahaya').value.trim();
          const kendali = riskBox.querySelector('.dynamic-kendali').value.trim();
          if (bahaya || kendali) {
@@ -501,6 +567,11 @@
     document.getElementById('checklistForm').style.display = 'none';
     document.getElementById('summaryPage').style.display = 'block';
     window.scrollTo(0, 0); 
+    
+    // Kembalikan Tampilan Sukses (Mencegah tampilan ter-overwrite error sebelumnya)
+    document.getElementById('summaryTitle').innerHTML = "Data Berhasil Disimpan!";
+    document.getElementById('summaryTitle').style.color = "#2c3e50";
+
     if (hasHazards) {
       document.getElementById('summaryIcon').innerHTML = "⚠️";
       document.getElementById('recapArea').style.display = 'block';
@@ -523,7 +594,6 @@
     document.getElementById('btnSubmit').disabled = false;
     periksaKondisiMerah(); dapatkanLokasi(); window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // Reset dropdown nama dan lokasi ke kondisi terkunci
     const elemenNama = document.getElementById('namaDropdown');
     const elemenLokasi1 = document.getElementById('lokasi1');
     const elemenLokasi2 = document.getElementById('lokasi2');
