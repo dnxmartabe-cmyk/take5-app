@@ -57,7 +57,7 @@
   
   <div class="header-container">
     <img src="https://lh3.googleusercontent.com/d/1KOtAu_QJHQRwQiLQ3zXycz6b9mpMz3NU" alt="Logo Kiri" class="logo-kiri">
-    <h1>Daftar Periksa 5 Langkah! (V4)</h1>
+    <h1>Daftar Periksa 5 Langkah! (v4.2)</h1>
     <img src="https://lh3.googleusercontent.com/d/1N9QvU_TPR0Hs7Ozgj5-uI3FEv9XLxTcJ" alt="Logo Kanan" class="logo-kanan">
   </div>
   
@@ -286,8 +286,21 @@
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log("Service Worker Berhasil Terdaftar!"))
+      .then(reg => {
+        console.log("Service Worker Berhasil Terdaftar!");
+        // Paksa browser diam-diam mengecek pembaruan di server setiap kali web dibuka
+        reg.update();
+      })
       .catch(err => console.log("Service Worker Gagal: ", err));
+
+    // Jika mendeteksi ada versi sw.js baru, otomatis refresh layar user 1x agar tampilan langsung berubah
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (!refreshing) {
+        window.location.reload();
+        refreshing = true;
+      }
+    });
   }
 
   let dataOffline = [];
@@ -488,7 +501,7 @@
       
       // Menampilkan daftar pertanyaan yang dijawab Tdk
       document.getElementById('recapArea').style.display = 'block';
-      document.getElementById('recapHeader').innerText = "Penyebab Tidak Valid (Dijawab 'Tdk'):";
+      document.getElementById('recapHeader').innerText = "Penyebab Tidak Valid (Anda MenJawab 'Tidak'pada Pernyataan Dibawah ini):";
       document.getElementById('recapContent').innerHTML = failedQuestionsHTML;
       
       const sumMsg = document.getElementById('summaryMessage');
