@@ -1,4 +1,4 @@
-const CACHE_NAME = 'take5-cache-v4.2';
+const CACHE_NAME = 'take5-cache-v4.3';
 const urlsToCache = [
   './',
   './index.html',
