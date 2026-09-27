@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar Periksa 5 Langkah!</title>
+  <title>Daftar Periksa 5 Langkah! v4.2</title>
   
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#3498db">
@@ -29,7 +29,6 @@
     .radio-merah { accent-color: #e74c3c; transform: scale(1.5); cursor: pointer; }
     .radio-hitam { accent-color: #2c3e50; transform: scale(1.5); cursor: pointer; }
     
-    /* Tambahan efek visual jika radio button di-disable */
     input[type="radio"]:disabled { opacity: 0.4; cursor: not-allowed; }
     .disabled-text { color: #bdc3c7; }
 
@@ -58,7 +57,7 @@
   
   <div class="header-container">
     <img src="https://lh3.googleusercontent.com/d/1KOtAu_QJHQRwQiLQ3zXycz6b9mpMz3NU" alt="Logo Kiri" class="logo-kiri">
-    <h1>Daftar Periksa 5 Langkah!</h1>
+    <h1>Daftar Periksa 5 Langkah! (V4)</h1>
     <img src="https://lh3.googleusercontent.com/d/1N9QvU_TPR0Hs7Ozgj5-uI3FEv9XLxTcJ" alt="Logo Kanan" class="logo-kanan">
   </div>
   
@@ -133,7 +132,7 @@
     <div id="summaryIcon" class="summary-success-icon">✅</div>
     <div id="summaryTitle" class="summary-title">Data Berhasil Disimpan!</div>
     <div id="recapArea" class="recap-box">
-      <h3>Daftar Temuan Bahaya & Kendali:</h3>
+      <h3 id="recapHeader">Daftar Temuan Bahaya & Kendali:</h3>
       <div id="recapContent"></div>
     </div>
     <div id="summaryMessage" class="summary-footer"></div>
@@ -242,7 +241,7 @@
     "Lati": [],
     "Martabe": [
       "Abdi pasaribu", "Abdul basir harahap", "Anugrah tri permana", "Baktiar Majid Nasution",
-      "Chichilia De Agustina Sihombing", "Deby ayu sabira", "Dimas Himawan nasution", "Faddillah Candra",
+      "Chichilia De Agustina Sihombing", "Deby ayu sabira", "Dimas Himawan nasution",
       "Ijun pasahri siregar", "Irmadani", "Ismail saleh siregar", "Jonson Hutagalung",
       "Laina Tussyaripah", "Muksin sihombing", "Noto prayitno", "Patima Renny",
       "Rahmat hayatul alamsyah siregar", "Ramadhan saputra", "Rizki Fauzi Batubara",
@@ -463,11 +462,17 @@
 
     // --- PENGECEKAN TAKE 5 TIDAK VALID (SOAL 1-4) ---
     let isInvalidTake5 = false;
+    let failedQuestionsHTML = ""; // Menyimpan teks pertanyaan yang dijawab Tdk
+
     for (let i = 1; i <= 4; i++) {
       const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
       if (checkedRadio && checkedRadio.value === 'Tdk') {
         isInvalidTake5 = true;
-        break;
+        const textSoal = document.getElementById(`text-q${i}`).innerText;
+        failedQuestionsHTML += `<div class="recap-item">
+                                  <div style="color: #c0392b; font-weight: bold;">Kendala (No ${i}):</div>
+                                  <div>${textSoal}</div>
+                                </div>`;
       }
     }
 
@@ -480,7 +485,11 @@
       document.getElementById('summaryIcon').innerHTML = "🛑";
       document.getElementById('summaryTitle').innerHTML = "Take5 anda tidak valid..!!!";
       document.getElementById('summaryTitle').style.color = "#c0392b";
-      document.getElementById('recapArea').style.display = 'none';
+      
+      // Menampilkan daftar pertanyaan yang dijawab Tdk
+      document.getElementById('recapArea').style.display = 'block';
+      document.getElementById('recapHeader').innerText = "Penyebab Tidak Valid (Dijawab 'Tdk'):";
+      document.getElementById('recapContent').innerHTML = failedQuestionsHTML;
       
       const sumMsg = document.getElementById('summaryMessage');
       sumMsg.className = "summary-footer footer-merah";
@@ -571,6 +580,7 @@
     // Kembalikan Tampilan Sukses (Mencegah tampilan ter-overwrite error sebelumnya)
     document.getElementById('summaryTitle').innerHTML = "Data Berhasil Disimpan!";
     document.getElementById('summaryTitle').style.color = "#2c3e50";
+    document.getElementById('recapHeader').innerText = "Daftar Temuan Bahaya & Kendali:";
 
     if (hasHazards) {
       document.getElementById('summaryIcon').innerHTML = "⚠️";
